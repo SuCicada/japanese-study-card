@@ -84,7 +84,9 @@ def addNotes(notes):
 import_list = [
     # Path("../../data/grammar/1 オクトーバーフェスト.txt"),
     # Path("../../data/grammar/2 産業医を増やそう.txt"),
-    Path("../../data/grammar/3 飯食わぬ女房_1.txt"),
+    # Path("../../data/grammar/3 飯食わぬ女房_1.txt"),
+    # Path("../../data/grammar/3 飯食わぬ女房_2.txt"),
+    Path("../../data/grammar/4 上司との付き合い方.txt"),
 ]
 for path in import_list:
     note_data = parse_txt(path)

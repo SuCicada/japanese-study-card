@@ -19,6 +19,7 @@ class Card:
     Reading: str = ""
     Meaning: str = ""  # html: 解释，例句
     EngTag: str = ""  # if english
+    VoiceRead: str = ""  # tts
     Notes: str = ""
     Tags: list[str] = None
 
@@ -33,8 +34,9 @@ def get_data():
         for word in s:
             try:
                 card = Card()
-                card.VocabularyKanji = word["formOrg"]
-                card.Reading = word["formKana"]
+                card.VocabularyKanji = word["formOrg"] # 单词
+                card.Reading = word["formKana"] # 读音
+                card.VoiceRead = word["formOrg"] # tts
                 frontMeanHtml = ""
                 backMeanHtml = ""
                 for meaning in word["meanings"]:
@@ -44,6 +46,8 @@ def get_data():
                     backSentenceHtml += f"""<div class="back-content">{meaning["content"]}</div>"""
                     for sentence in sentences:
                         formOrg = sentence["formOrg"]
+                        if not formOrg.endswith("。"):
+                            formOrg += "。"
                         frontSentenceHtml += f"""<div class="front-formOrg">{formOrg}</div>"""
 
                         backSentenceHtml += f"""<div class="back-formOrg">{formOrg}</div>"""
@@ -81,9 +85,9 @@ def create_anki(cards: list[Card]):
         'japanese_jlpt_n1',
         fields=[
             {'name': 'VocabularyKanji'},
-            {'name': 'Expression'},
-
             {'name': 'Reading'},
+            {'name': 'VoiceRead'},
+            {'name': 'Expression'},
             {'name': 'Meaning'},
             {'name': 'EngTag'},
             {'name': 'Notes'},
@@ -96,33 +100,41 @@ def create_anki(cards: list[Card]):
   <span style="font-family: irohamaru mikami; font-size: 50px;">{{VocabularyKanji}}</div>
 
 <hr id="answer" class="separator" />
+<div class="expression">
 {{Expression}}
-
 </div>
-<!--
-1{{tts-voices:}}
--->
                 """,
                 'afmt': """
 <div class="card-content center">
 <div class="center">
-  <span style="font-family: irohamaru mikami; font-size: 50px;">{{Expression}}</span>
-  <hr id="answer" class="separator" />
+  <span style="font-family: irohamaru mikami; font-size: 50px;">{{VocabularyKanji}}</span>
 </div>
+
+<!--  <hr id="answer" class="separator" /> -->
   <span style="font-size: 40px;">{{furigana:Reading}}</span>
-  <hr id="answer" class="separator" />
+
+  <div class="card-tags-container"> 
+    <span class="tags">{{Tags}}</span>
+
+    <span class="entag">{{EngTag}}</span>
+ </div>
+
   <div class="center">
     <span style="font-size: 30px;">{{furigana:Meaning}}</span>
   </div>
+
+
   <div class="left">
     <span style="font-size: 30px;">{{furigana:Notes}}</span>
   </div>
-  <div class="card-tags-container">
-    <div class="bottom" style="font-size: 20px;">{{Tags}}</div>
-  </div>
+
+
 </div>
-{{tts ja_JP voices=Apple_O-ren,Microsoft_Haruka:Expression}}
+
+{{tts ja_JP voices=Apple_O-ren,Microsoft_Haruka:VocabularyKanji}}
 {{tts ja_JP voices=Apple_O-ren,Microsoft_Haruka:Reading}}
+{{tts ja_JP voices=Apple_O-ren,Microsoft_Haruka:Expression}}
+
                 """,
             },
         ],
@@ -137,7 +149,8 @@ def create_anki(cards: list[Card]):
         # 创建一个卡片
         my_note = genanki.Note(
             model=my_model,
-            fields=[card.VocabularyKanji, card.Expression, card.Reading, card.Meaning, card.EngTag, card.Notes],
+            fields=[card.VocabularyKanji, card.Reading, card.VoiceRead, card.Expression, card.Meaning,
+                    card.EngTag, card.Notes],
             tags=card.Tags
         )
 

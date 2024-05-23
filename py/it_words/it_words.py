@@ -130,6 +130,7 @@ def build_notes(note_data):
                 "Reading": note["Reading"],
                 "Meaning": note["Meaning"],
                 "Notes": "",
+                "VoiceRead": note["Expression"],
             },
         })
     return notes
