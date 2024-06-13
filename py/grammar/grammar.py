@@ -5,9 +5,12 @@ from pprint import pprint
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
 import anki_cli
+
 data_dir = os.path.join(os.path.dirname(__file__), "")
 # data_dir = os.path.abspath(Path(__file__)
-print("data_dir",data_dir)
+print("data_dir", data_dir)
+
+
 def parse_txt(name):
     with open(os.path.join(data_dir, name), "r", encoding="utf-8") as f:
         gram_block = f.read().split("\n\n")
@@ -17,6 +20,8 @@ def parse_txt(name):
             try:
                 parts = gram.split("---")
                 print(parts)
+                if len(parts) == 1 and parts[0].strip() == "":
+                    continue
                 examples = parts[1].strip().splitlines()
                 example = examples[0]
                 example_reading = ""
@@ -37,6 +42,7 @@ def parse_txt(name):
                 raise e
         return res
 
+
 def addNotes(notes):
     for note in notes:
         try:
@@ -48,6 +54,7 @@ def addNotes(notes):
             print(note["fields"]["Expression"], result)
         except Exception as e:
             print("err", note["fields"]["Expression"], e)
+
 
 def build_notes(note_data):
     notes = []
@@ -64,8 +71,6 @@ def build_notes(note_data):
             },
         })
     return notes
-
-
 
 
 def addNotes(notes):
@@ -86,7 +91,9 @@ import_list = [
     # Path("../../data/grammar/2 産業医を増やそう.txt"),
     # Path("../../data/grammar/3 飯食わぬ女房_1.txt"),
     # Path("../../data/grammar/3 飯食わぬ女房_2.txt"),
-    Path("../../data/grammar/4 上司との付き合い方.txt"),
+    # Path("../../data/grammar/4 上司との付き合い方.txt"),
+    # Path("../../data/grammar/4 上司との付き合い方_2.txt"),
+    Path("../../data/grammar/5 ドラマのシナリオを読む.txt"),
 ]
 for path in import_list:
     note_data = parse_txt(path)
