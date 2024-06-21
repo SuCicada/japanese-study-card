@@ -93,7 +93,8 @@ import_list = [
     # Path("../../data/grammar/3 飯食わぬ女房_2.txt"),
     # Path("../../data/grammar/4 上司との付き合い方.txt"),
     # Path("../../data/grammar/4 上司との付き合い方_2.txt"),
-    Path("../../data/grammar/5 ドラマのシナリオを読む.txt"),
+#     Path("../../data/grammar/5 転職_1.txt"),
+    Path("../../data/grammar/5 転職_2.txt"),
 ]
 for path in import_list:
     note_data = parse_txt(path)
