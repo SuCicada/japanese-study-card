@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import sys
 from dataclasses import dataclass
 from pprint import pprint
@@ -14,7 +15,8 @@ import anki_cli
 @dataclass
 class Card:
     VocabularyKanji: str = ""  # 单词
-    Expression: str = ""  # html: 例句
+    Expression: str = ""  # html: 例句，显示注音
+    ExpressionRead: str = ""  # html: 例句, 发音
 
     Reading: str = ""  # 显示的读音
     Meaning: str = ""  # html: 解释
@@ -24,7 +26,7 @@ class Card:
 
 
 def get_data():
-    with open("words1_lesson.json", "r") as f:
+    with open("words2_lesson.json", "r") as f:
         s = f.read()
         s = json.loads(s)
         print(len(s))
@@ -45,7 +47,10 @@ def get_data():
                 card.VoiceRead = VocabularyKanji
 
                 [Expression, ExpressionZH] = word["example"].split("\n")
-                card.Expression = Expression
+                newExpression = re.sub(r'\[(\w+)]', r'<span class="express-word">\1</span>', Expression)
+
+                card.Expression = newExpression
+                card.ExpressionRead = Expression
                 card.ExpressionZH = ExpressionZH
                 card.Meaning = word["explain"]
 
@@ -71,8 +76,8 @@ def create_anki(cards: list[Card]):
     with open("back.html", "r") as f:
         back = f.read()
     my_model = genanki.Model(
-        202410011554,
-        'japanese_jlpt_core',
+        202410011556,
+        'japanese_jlpt_core2',
         fields=[
             {'name': 'VocabularyKanji'},
             {'name': 'Reading'},
@@ -92,8 +97,8 @@ def create_anki(cards: list[Card]):
 
     # 创建一个Anki牌组
     my_deck = genanki.Deck(
-        202410011555,
-        'N1考试800核心词汇')
+        202410011556,
+        'N2考试800核心词汇')
 
     for card in cards:
         # 创建一个卡片
@@ -113,7 +118,7 @@ def create_anki(cards: list[Card]):
         my_deck.add_note(my_note)
 
     # 导出为.apkg文件
-    genanki.Package(my_deck).write_to_file('N1考试800核心词汇.apkg')
+    genanki.Package(my_deck).write_to_file('N2考试800核心词汇.apkg')
 
 
 def sample():

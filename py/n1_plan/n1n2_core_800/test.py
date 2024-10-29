@@ -1,10 +1,10 @@
 import json
 
-with open("words1.json", "r") as f:
+with open("words2.json", "r") as f:
     s = f.read()
     s = json.loads(s)
 
-    sorted_s = sorted(s, key=lambda x: x["word"])
+    sorted_s = sorted(s, key=lambda x: x["index"])
 
     i = 0
     lesson  = 1
@@ -15,5 +15,5 @@ with open("words1.json", "r") as f:
             x["lesson"] = gi + 1
             res.append(x)
     print(res)
-    with open("words1_lesson.json", "w") as f:
+    with open("words2_lesson.json", "w") as f:
         f.write(json.dumps(res, indent=4, ensure_ascii=False))
